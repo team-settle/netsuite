@@ -1,12 +1,48 @@
 ## Unreleased
 
+### Added
+* Add `get_deleted` action to `CustomerCategory` (#595)
+* Add `get_deleted` action to `Customer` (#605)
+
+### Fixed
+* Revert recent proxy changes which breaks proxy usage by @andrewdicken-stripe in https://github.com/NetSweet/netsuite/pull/579
+
+### Breaking Changes
+
+## v0.9.3
+
+### Added
+* Create abstract action parent class by @andrewdicken-stripe in https://github.com/NetSweet/netsuite/pull/568
+
+### Fixed
+* Add department, klass and location EstimateItem/record_refs by @nickdufresne in https://github.com/NetSweet/netsuite/pull/572
+* Invoice shipping_tax_code should be a record_ref by @stevewoodcock in https://github.com/NetSweet/netsuite/pull/573
+* dont crash if suitetalk returns empty <platformCore:searchRowList/> by @ericcj in https://github.com/NetSweet/netsuite/pull/574
+* Add :klass field to record VendorReturnAuthorizationItem & VendorReturnAuthorization by @shubhrathasetty in https://github.com/NetSweet/netsuite/pull/576
+* Optionally pass in `proxy` parameter to Savon by @dbecker-stripe in https://github.com/NetSweet/netsuite/pull/548
+
+## v0.9.2
+
+### Fixed
+
+* Update rspec requirement from ~> 3.11.0 to ~> 3.12.0 by @dependabot in https://github.com/NetSweet/netsuite/pull/567
+* [Adding UK country mapping](https://github.com/NetSweet/netsuite/commit/5fe96ed28fb8341b6926e169cf50d817632b5b8d)
+
+### Breaking Changes
+
+* [remove country mapping hack for old API versions](https://github.com/NetSweet/netsuite/commit/a0357f0a9e08eb3a4a80f1d1e7a37f95bcb17d4f)
+
+## v0.9.1
 
 ### Added
 * Add `Configuration#multi_tenant!` for opting into multi-tentant support where configuration/caching is per-thread (#556)
 
 ### Fixed
-* Locked Savon to version `< 2.13` to prevent XML parsing issues.
+* Avoid Savon version `2.13.0` to prevent generating invalid envelopes. (#558, #563)
+* Retry on `HTTPI::SSLError` and `HTTPI::TimeoutError` in backoff (#566)
+
 ### Breaking Changes
+* Update default API version to 2016_2 from 2015_1 when `api_version` is not explicitly set (#554)
 
 ## 0.9.0
 
@@ -20,6 +56,9 @@ The following were removed as `fields` since their sublist class is not yet impl
 * Add `update` action to `File` records (#544)
 * Expose `errors` after calls to `delete` action (#545)
 * Add `update_list` action where missing on supported item records (#546)
+* Add `proxy` attribute to `NetSuite::Configuration` to set a proxy used by the savon client (#547)
+
+### Fixed
 * Ignore `after_submit_failed` status details (>= 2018.2) when collating errors in add action (#550)
 * Add `NullFieldList` to `SalesOrder` (#552)
 * Add thread safety to NetSuite configuration and utilities (#549)

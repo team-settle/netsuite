@@ -56,12 +56,12 @@ module NetSuite
       ns_record
     end
 
-    def netsuite_server_time
-      server_time_response = NetSuite::Utilities.backoff { NetSuite::Configuration.connection.call(:get_server_time) }
+    def netsuite_server_time(credentials={})
+      server_time_response = NetSuite::Utilities.backoff { NetSuite::Configuration.connection({}, credentials).call(:get_server_time) }
       server_time_response.body[:get_server_time_response][:get_server_time_result][:server_time]
     end
 
-    def netsuite_data_center_urls(account_id)
+    def netsuite_data_center_urls(account_id, credentials={})
       data_center_call_response = NetSuite::Configuration.connection({
         # NOTE force a production WSDL so the sandbox settings are ignored
         #      as of 1/20/18 NS will start using the account ID to determine
@@ -75,7 +75,7 @@ module NetSuite
         },
 
         soap_header: {}
-      }).call(:get_data_center_urls, message: {
+      }, credentials).call(:get_data_center_urls, message: {
         'platformMsgs:account' => account_id
       })
 
@@ -125,6 +125,8 @@ module NetSuite
         exceptions_to_retry << OpenSSL::SSL::SSLErrorWaitReadable if defined?(OpenSSL::SSL::SSLErrorWaitReadable)
 
         # depends on the http library chosen
+        exceptions_to_retry << HTTPI::SSLError if defined?(HTTPI::SSLError)
+        exceptions_to_retry << HTTPI::TimeoutError if defined?(HTTPI::TimeoutError)
         exceptions_to_retry << HTTPClient::TimeoutError if defined?(HTTPClient::TimeoutError)
         exceptions_to_retry << HTTPClient::ConnectTimeoutError if defined?(HTTPClient::ConnectTimeoutError)
         exceptions_to_retry << HTTPClient::ReceiveTimeoutError if defined?(HTTPClient::ReceiveTimeoutError)
